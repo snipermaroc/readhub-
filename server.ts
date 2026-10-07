@@ -1655,7 +1655,48 @@ app.post('/api/db/query', async (req: Request, res: Response) => {
 // ───────────────────────────────────────────────────────────────────────────
 seedDefaultAdmin();
 
-app.post('/api/auth/sign-in', authRateLimiter, async (req: Request, res: Response) => {
+// ── Admin Password Reset Endpoint ────────────────────────────────────────
+// POST /api/auth/reset-admin  { resetKey: "<value of ADMIN_PASSWORD env var>" }
+// Forcefully re-hashes the admin password to match the current ADMIN_PASSWORD.
+// Use this when the volume has stale data and login returns 401.
+// Only works when ADMIN_PASSWORD env var is set (production guard).
+app.post('/api/auth/reset-admin', authRateLimiter, (req: Request, res: Response) => {
+  const { resetKey } = req.body || {};
+  const envPassword = process.env.ADMIN_PASSWORD;
+
+  if (!envPassword) {
+    return res.status(503).json({ error: 'ADMIN_PASSWORD is not configured on this server.' });
+  }
+  if (!resetKey || resetKey !== envPassword) {
+    return res.status(403).json({ error: 'Invalid reset key.' });
+  }
+
+  const users = memoryStore.get('users') || [];
+  const idx = users.findIndex((u: any) => u.email === 'admin@readhub.com');
+  const newSalt = crypto.randomBytes(16).toString('hex');
+  const newHash = hashPassword(envPassword, newSalt);
+
+  if (idx >= 0) {
+    users[idx] = { ...users[idx], password_hash: newHash, salt: newSalt, updated_at: new Date().toISOString() };
+  } else {
+    users.push({
+      id: 'usr_admin_readhub',
+      email: 'admin@readhub.com',
+      password_hash: newHash,
+      salt: newSalt,
+      role: 'admin',
+      display_name: 'Administrator',
+      created_at: new Date().toISOString(),
+    });
+  }
+
+  memoryStore.set('users', users);
+  persistStore(true);
+  console.log('[Auth] Admin password forcefully reset via /api/auth/reset-admin');
+  return res.json({ success: true, message: 'Admin password reset. You can now log in with your ADMIN_PASSWORD.' });
+});
+
+
   const { email, password } = req.body || {};
   if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
     return res.status(400).json({ error: { message: 'Adresse e-mail et mot de passe requis' }, data: null });
