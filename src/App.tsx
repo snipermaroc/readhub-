@@ -18,7 +18,6 @@ import LogsPage from "./pages/LogsPage"
 import ProtectedRoute from "./components/ProtectedRoute"
 import LegalPage from "./pages/LegalPage"
 import { ThemeProvider } from "./components/ThemeProvider"
-import { FloatingChatbot } from "./components/FloatingChatbot"
 
 const queryClient = new QueryClient()
 
@@ -77,7 +76,6 @@ const App = () => (
             {/* Catch-all 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <FloatingChatbot />
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
