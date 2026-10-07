@@ -1,0 +1,17 @@
+{
+  "name": "Manga Portal",
+  "short_name": "Manga",
+  "description": "Read manga online for free",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#006769",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

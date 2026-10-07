@@ -326,42 +326,77 @@ function verifyPassword(password: string, salt: string, hash: string): boolean {
   }
 }
 
-// Seed initial admin user if no users exist
+// Seed initial admin user if no users exist.
+// If ADMIN_PASSWORD is set and the stored hash does not match,
+// the hash is reset so the env var always wins.
 function seedDefaultAdmin() {
   const users = memoryStore.get('users') || [];
-  if (users.length === 0) {
-    const salt = crypto.randomBytes(16).toString('hex');
-    let defaultPassword = process.env.ADMIN_PASSWORD;
+  const envPassword = process.env.ADMIN_PASSWORD;
 
-    if (!defaultPassword) {
-      if (isProd) {
-        console.error('\nCRITICAL SECURITY ERROR: ADMIN_PASSWORD environment variable is missing on startup.');
-        console.error('To secure the deployment, you must set ADMIN_PASSWORD before booting READHUB in production.\n');
-        process.exit(1);
-      } else {
-        // Generate a random secure 16-character password for development safety
-        defaultPassword = crypto.randomBytes(12).toString('base64').replace(/[^a-zA-Z0-9]/g, 'A').substring(0, 16);
-        console.log('\n========================================================================');
-        console.log('⚠️  DEVELOPMENT SECURITY NOTICE: ADMIN_PASSWORD environment variable is missing.');
-        console.log('An auto-generated, randomized secure password has been assigned for safety:');
-        console.log(`\n👉 Email: admin@readhub.com`);
-        console.log(`👉 Password: ${defaultPassword}`);
-        console.log('\n========================================================================\n');
-      }
+  if (!envPassword) {
+    if (isProd) {
+      console.error('\nCRITICAL SECURITY ERROR: ADMIN_PASSWORD environment variable is missing.');
+      console.error('Set ADMIN_PASSWORD in your environment before starting in production.\n');
+      process.exit(1);
+    } else if (users.length === 0) {
+      // Dev only: generate random password on first boot
+      const devPassword = crypto.randomBytes(12).toString('base64').replace(/[^a-zA-Z0-9]/g, 'A').substring(0, 16);
+      const salt = crypto.randomBytes(16).toString('hex');
+      users.push({
+        id: 'usr_admin_readhub',
+        email: 'admin@readhub.com',
+        password_hash: hashPassword(devPassword, salt),
+        salt,
+        role: 'admin',
+        display_name: 'Administrator',
+        created_at: new Date().toISOString(),
+      });
+      memoryStore.set('users', users);
+      persistStore(true);
+      console.log('\n========================================================================');
+      console.log('⚠️  DEV NOTICE: Auto-generated admin password:');
+      console.log(`👉 Email:    admin@readhub.com`);
+      console.log(`👉 Password: ${devPassword}`);
+      console.log('========================================================================\n');
     }
+    return;
+  }
 
-    const defaultAdmin = {
+  // ADMIN_PASSWORD is set — ensure admin exists with the correct hash
+  const existingIdx = users.findIndex((u: any) => u.email === 'admin@readhub.com');
+
+  if (existingIdx >= 0) {
+    // Admin exists — verify the hash matches the current ADMIN_PASSWORD.
+    // If it doesn't match (e.g. password was changed in env var, or stale volume),
+    // reset the hash so the env var always takes effect.
+    const existing = users[existingIdx];
+    if (!verifyPassword(envPassword, existing.salt, existing.password_hash)) {
+      const newSalt = crypto.randomBytes(16).toString('hex');
+      users[existingIdx] = {
+        ...existing,
+        password_hash: hashPassword(envPassword, newSalt),
+        salt: newSalt,
+        updated_at: new Date().toISOString(),
+      };
+      memoryStore.set('users', users);
+      persistStore(true);
+      console.log('[Auth] Admin password hash updated to match current ADMIN_PASSWORD env var.');
+    }
+  } else {
+    // No admin yet — create one
+    const salt = crypto.randomBytes(16).toString('hex');
+    users.push({
       id: 'usr_admin_readhub',
       email: 'admin@readhub.com',
-      password_hash: hashPassword(defaultPassword, salt),
+      password_hash: hashPassword(envPassword, salt),
       salt,
       role: 'admin',
       display_name: 'Administrator',
       created_at: new Date().toISOString(),
-    };
-    users.push(defaultAdmin);
+    });
     memoryStore.set('users', users);
     persistStore(true);
+    console.log('[Auth] Admin account created from ADMIN_PASSWORD env var.');
   }
 }
 
