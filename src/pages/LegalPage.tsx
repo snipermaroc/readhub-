@@ -10,7 +10,7 @@ type LegalKind = 'privacy' | 'cookies' | 'terms' | 'dmca' | 'contact'
 const defaultPages: Record<LegalKind, { title: string; intro: string; sections: { heading: string; text: string }[] }> = {
   privacy: {
     title: 'Privacy Policy',
-    intro: 'This Privacy Policy describes how READHUB collects, uses, and discloses information when you visit our manga discovery portal and independent editions.',
+    intro: 'This Privacy Policy describes how this platform collects, uses, and discloses information when you visit our manga discovery portal and independent editions.',
     sections: [
       { heading: 'Information We Collect', text: 'We may collect information you provide directly, such as email addresses when registering an admin account or contacting support. When browsing, anonymous analytics metrics such as pages viewed, referrers, and device types may be logged.' },
       { heading: 'How We Use Information', text: 'Collected data is used solely to maintain platform operations, deliver manga content, monitor performance, and prevent unauthorized scraping or security incidents.' },
@@ -20,7 +20,7 @@ const defaultPages: Record<LegalKind, { title: string; intro: string; sections: 
   },
   cookies: {
     title: 'Cookie Policy',
-    intro: 'This Cookie Policy explains how cookies and similar local storage mechanisms are utilized across READHUB and affiliated manga editions.',
+    intro: 'This Cookie Policy explains how cookies and similar local storage mechanisms are utilized across this platform and affiliated manga editions.',
     sections: [
       { heading: 'Essential Cookies', text: 'These cookies are required for fundamental site functions such as theme preferences (dark mode), reader settings, and secure administrator authentication.' },
       { heading: 'Performance & Analytics', text: 'We may collect anonymous usage statistics to understand popular manga series, reader engagement, and server response times.' },
@@ -29,16 +29,16 @@ const defaultPages: Record<LegalKind, { title: string; intro: string; sections: 
   },
   terms: {
     title: 'Terms of Service',
-    intro: 'Please read these Terms of Service carefully before accessing or using the READHUB portal and connected manga reader websites.',
+    intro: 'Please read these Terms of Service carefully before accessing or using this portal and connected manga reader websites.',
     sections: [
-      { heading: 'Acceptance of Terms', text: 'By accessing READHUB or any affiliated manga site edition, you agree to comply with and be bound by these Terms of Service.' },
+      { heading: 'Acceptance of Terms', text: 'By accessing this portal or any affiliated manga site edition, you agree to comply with and be bound by these Terms of Service.' },
       { heading: 'Use of the Platform', text: 'You agree to use the service for personal, non-commercial reading purposes. Any automated scraping, excessive rate requesting, or attempt to disrupt service integrity is strictly prohibited.' },
       { heading: 'Intellectual Property', text: 'All manga titles, cover artwork, and illustrated works remain the property of their respective authors and publishers.' },
     ],
   },
   dmca: {
     title: 'DMCA Copyright Policy',
-    intro: 'READHUB respects the intellectual property rights of creators and complies with the Digital Millennium Copyright Act (DMCA).',
+    intro: 'This platform respects the intellectual property rights of creators and complies with the Digital Millennium Copyright Act (DMCA).',
     sections: [
       { heading: 'Notice and Takedown', text: 'If you are a copyright owner or an agent thereof and believe that any content hosted or indexed on our network infringes your copyright, you may submit a formal notification.' },
       { heading: 'Required Information', text: 'Your notice must include identification of the copyrighted work, URL location of the infringing material, your contact information, a statement of good faith belief, and a physical or electronic signature.' },
@@ -47,17 +47,17 @@ const defaultPages: Record<LegalKind, { title: string; intro: string; sections: 
   },
   contact: {
     title: 'Contact Us',
-    intro: 'Have questions, suggestions, or need assistance with READHUB? Get in touch with our team.',
+    intro: 'Have questions, suggestions, or need assistance? Get in touch with our team.',
     sections: [
-      { heading: 'General Inquiries', text: 'For questions regarding manga editions, feature requests, or general support, please reach out to admin@readhub.com.' },
-      { heading: 'Publishers & Creators', text: 'If you are an independent creator or publisher interested in launching an edition on READHUB, contact our team to get started.' },
+      { heading: 'General Inquiries', text: 'For questions regarding manga editions, feature requests, or general support, please reach out via the contact form.' },
+      { heading: 'Publishers & Creators', text: 'If you are an independent creator or publisher interested in launching an edition on this platform, contact our team to get started.' },
     ],
   },
 }
 
 export default function LegalPage({ kind = 'privacy' }: { kind?: LegalKind }) {
   const [customHtml, setCustomHtml] = useState<string | null>(null)
-  const [brandName, setBrandName] = useState('MangaReadHub')
+  const [brandName, setBrandName] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

@@ -41,7 +41,7 @@ export function FloatingChatbot() {
     {
       id: 'welcome_1',
       sender: 'bot',
-      text: '👋 Bonjour ! Je suis votre assistant virtuel READHUB. Je peux vous informer sur le **trafic en direct**, les **mangas populaires**, la **facturation**, ou vous guider dans l\'administration.',
+      text: '👋 Bonjour ! Je suis votre assistant virtuel. Je peux vous informer sur le **trafic en direct**, les **mangas populaires**, la **facturation**, ou vous guider dans l\'administration.',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ])
@@ -130,7 +130,7 @@ export function FloatingChatbot() {
               </div>
               <div>
                 <h4 className="font-headline font-bold text-sm text-foreground flex items-center gap-1.5">
-                  Assistant READHUB <Sparkles size={13} className="text-amber-400 fill-amber-400" />
+                  Assistant <Sparkles size={13} className="text-amber-400 fill-amber-400" />
                 </h4>
                 <p className="text-[10px] text-muted-foreground font-semibold">En ligne · Données réelles</p>
               </div>
@@ -247,7 +247,7 @@ export function FloatingChatbot() {
         aria-label="Ouvrir l'assistant IA"
       >
         <Bot size={20} className="animate-bounce" />
-        <span className="hidden sm:inline font-headline tracking-wide">Assistant READHUB</span>
+        <span className="hidden sm:inline font-headline tracking-wide">Assistant</span>
         <span className="flex h-2.5 w-2.5 relative">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />

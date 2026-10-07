@@ -314,7 +314,7 @@ export default function ExamplePrompt() {
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold tracking-tight text-foreground font-headline">READHUB</span>
+                <span className="font-extrabold tracking-tight text-foreground font-headline"></span>
                 <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary border border-primary/20">
                   AI PROMPT GENERATOR
                 </span>

@@ -6,7 +6,7 @@ import MangaFooter from "@/components/MangaFooter"
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-surface dark:bg-[#0f1117] text-on-surface">
-      <MangaHeader siteName="READHUB" />
+      <MangaHeader siteName="" />
 
       {/* Matching Design System 9c */}
       <main className="min-h-[75vh] flex items-center justify-center px-6 md:px-8 pt-20 pb-20">
@@ -48,7 +48,7 @@ export default function NotFound() {
         </div>
       </main>
 
-      <MangaFooter siteName="READHUB" />
+      <MangaFooter siteName="" />
     </div>
   )
 }

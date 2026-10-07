@@ -85,7 +85,7 @@ export default function Admin({ initialSection = "overview" }: { initialSection?
   const draft = sites.filter(site => site.status === "draft").length
   const archived = sites.filter(site => site.status === "archived").length
   const currentNav = navItems.find(item => item.id === section)
-  const title = currentNav?.label ?? "READHUB"
+  const title = currentNav?.label ?? ""
 
   let panel
   if (section === "overview") panel = <Overview sites={sites} active={active} draft={draft} archived={archived} counts={counts} loading={loading} open={(sec) => { setSection(sec); setSidebarOpen(false); }} />
@@ -130,7 +130,7 @@ export default function Admin({ initialSection = "overview" }: { initialSection?
                 <BookOpen size={18} />
               </span>
               <div>
-                <b className="block text-sm tracking-wide font-headline">{t("READHUB")}</b>
+                <b className="block text-sm tracking-wide font-headline"></b>
                 <small className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{t("Control room")}</small>
               </div>
             </Link>
@@ -248,7 +248,7 @@ export default function Admin({ initialSection = "overview" }: { initialSection?
             <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
               <Shield size={13} className="text-primary" /> {t("Admin Console")}
             </div>
-            <p className="mt-0.5 text-[11px] text-muted-foreground truncate">{user?.email || "admin@readhub.com"}</p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground truncate">{user?.email || ""}</p>
           </div>
           <button
             onClick={() => void signOut()}
@@ -272,7 +272,7 @@ export default function Admin({ initialSection = "overview" }: { initialSection?
               <Menu size={20} />
             </button>
             <div>
-              <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">{t("READHUB Control Room")}</p>
+              <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">{t("Control Room")}</p>
               <h1 className="text-base md:text-lg font-bold font-headline">{t(title)}</h1>
             </div>
           </div>

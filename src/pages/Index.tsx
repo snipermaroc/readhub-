@@ -262,7 +262,7 @@ export default function Index() {
               <span className="p-1.5 bg-emerald-500 rounded-xl text-white">
                 <BookOpen size={20} />
               </span>
-              <span>{config.brandName || "MangaReadHub"}</span>
+              <span>{config.brandName || ""}</span>
             </Link>
             <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600 dark:text-slate-300">
               <Link to="/" className="text-emerald-500">Home</Link>
@@ -610,13 +610,13 @@ export default function Index() {
               <section className="seo-text mt-16 pt-12 border-t border-slate-200 dark:border-slate-800 space-y-4">
                 <div className="space-y-4">
                   <h2 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
-                    {config.seoTitle || "Read Manga Online Free on MangaReadHub"}
+                    {config.seoTitle || "Read Manga Online Free"}
                   </h2>
                   <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                    {config.seoDescription || "Welcome to MangaReadHub, your home for the best manga reading experience online. Explore hundreds of series across action, adventure, fantasy, romance, comedy, and horror."}
+                    {config.seoDescription || "Welcome to your manga reading portal. Explore hundreds of series across action, adventure, fantasy, romance, comedy, and horror."}
                   </p>
                   <h3 className="font-sans text-lg font-bold text-slate-900 dark:text-white pt-2">
-                    Why Choose MangaReadHub?
+                    Why Choose This Portal?
                   </h3>
                   <ul className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed list-disc pl-5 space-y-1.5">
                     <li>High-resolution scans and reader-optimized page rendering</li>
@@ -685,10 +685,10 @@ export default function Index() {
           {/* Brand */}
           <div className="space-y-3">
             <div className="font-sans text-lg font-black text-slate-950 dark:text-white">
-              {config.brandName || "MangaReadHub"}
+              {config.brandName || ""}
             </div>
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Read manga online free at {config.brandName || "MangaReadHub"}. Discover top series updated daily with high speed performance.
+              Read manga online free. Discover top series updated daily with high speed performance.
             </p>
           </div>
 
@@ -719,7 +719,7 @@ export default function Index() {
 
         {/* Copy bar */}
         <div className="border-t border-slate-200 dark:border-slate-800/60 py-5 px-6 max-w-[1536px] mx-auto text-center text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
-          © {new Date().getFullYear()} {config.brandName || "MangaReadHub"}. All rights reserved.
+          © {new Date().getFullYear()} {config.brandName || ""}. All rights reserved.
         </div>
       </footer>
     </div>

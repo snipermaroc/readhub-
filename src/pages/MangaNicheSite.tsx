@@ -368,7 +368,7 @@ export default function MangaNicheSite({ site: initialSite }: { site?: Site }) {
                 About this Edition
               </h3>
               <p className="text-xs text-secondary leading-relaxed mb-4">
-                {site?.description || `${site?.name || 'This edition'} is hosted on the READHUB network for optimized reader experience.`}
+                {site?.description || `${site?.name || 'This edition'} is your destination for optimized reading experience.`}
               </p>
               <div className="border-t border-outline-variant/15 pt-4 space-y-2.5 text-xs">
                 <div className="flex justify-between">
@@ -444,7 +444,7 @@ export default function MangaNicheSite({ site: initialSite }: { site?: Site }) {
                 to="/"
                 className="text-xs text-primary font-semibold hover:underline inline-flex items-center gap-1"
               >
-                ← Explore more editions on READHUB
+                ← Explore more editions
               </Link>
             </div>
           </aside>
