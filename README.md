@@ -1,20 +1,28 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# READHUB — Manga Portal Platform
 
-# Run and deploy your AI Studio app
+A full-stack manga publishing platform with a React frontend, Express backend, PostgreSQL database, static site generator, and admin dashboard.
 
-This contains everything you need to run your app locally.
+## Quick Start
 
-View your app in AI Studio: https://ai.studio/apps/4a7120bf-95b9-4883-983d-6189392f1a4a
+```bash
+npm install
+npm run dev
+```
 
-## Run Locally
+Open [http://localhost:3000](http://localhost:3000)
 
-**Prerequisites:**  Node.js
+Admin panel: [http://localhost:3000/hub](http://localhost:3000/hub)
 
+## Deploy
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+See [COOLIFY_DEPLOY.md](./COOLIFY_DEPLOY.md) for full deployment instructions.
+
+## Tech Stack
+
+- **Frontend:** React 18, Vite, TypeScript, Tailwind CSS
+- **Backend:** Express 4, Node.js, tsx
+- **Database:** PostgreSQL (with in-memory fallback)
+- **Auth:** scrypt password hashing, HttpOnly session cookies
+- **Security:** helmet, rate limiting, CORS allowlist, sanitize-html, DOMPurify
+
+<!-- sync test: 2026-10-07 -->
