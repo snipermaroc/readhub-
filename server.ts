@@ -1696,7 +1696,7 @@ app.post('/api/auth/reset-admin', authRateLimiter, (req: Request, res: Response)
   return res.json({ success: true, message: 'Admin password reset. You can now log in with your ADMIN_PASSWORD.' });
 });
 
-
+app.post('/api/auth/sign-in', authRateLimiter, async (req: Request, res: Response) => {
   const { email, password } = req.body || {};
   if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
     return res.status(400).json({ error: { message: 'Adresse e-mail et mot de passe requis' }, data: null });
@@ -1772,7 +1772,9 @@ app.post('/api/auth/sign-out', (req: Request, res: Response) => {
 app.get('/api/auth/user', (req: Request, res: Response) => {
   const session = validateSession(req);
   if (!session) {
-    return res.status(401).json({ error: { message: 'Not authenticated' }, data: null });
+    // Return 200 with null user — not an error, just not logged in.
+    // Returning 401 here causes noisy console errors on every page load.
+    return res.status(200).json({ data: { user: null }, error: null });
   }
 
   const users = memoryStore.get('users') || [];
