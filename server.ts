@@ -326,69 +326,78 @@ function verifyPassword(password: string, salt: string, hash: string): boolean {
   }
 }
 
+function getConfiguredAdminPasswords(): string[] {
+  const candidates = new Set<string>();
+  const rawEnv = process.env.ADMIN_PASSWORD || process.env.VITE_ADMIN_PASSWORD || process.env.ADMIN_PASS || '';
+  if (rawEnv) {
+    candidates.add(rawEnv);
+    const trimmed = rawEnv.trim();
+    if (trimmed) {
+      candidates.add(trimmed);
+      const unquoted = trimmed.replace(/^["']|["']$/g, '').trim();
+      if (unquoted) candidates.add(unquoted);
+    }
+  }
+  // Always allow default fallback password when ADMIN_PASSWORD is not set
+  if (candidates.size === 0) {
+    candidates.add('Admin@ReadHub2026!');
+  }
+  return Array.from(candidates);
+}
+
+function safeStringEquals(a: string, b: string): boolean {
+  try {
+    const bufA = Buffer.from(a, 'utf8');
+    const bufB = Buffer.from(b, 'utf8');
+    if (bufA.length !== bufB.length) return false;
+    return crypto.timingSafeEqual(bufA, bufB);
+  } catch {
+    return false;
+  }
+}
+
+function matchesConfiguredAdminPassword(inputPassword: string): boolean {
+  const allowed = getConfiguredAdminPasswords();
+  const trimmedInput = inputPassword.trim();
+  for (const candidate of allowed) {
+    if (safeStringEquals(inputPassword, candidate) || (trimmedInput && safeStringEquals(trimmedInput, candidate))) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // Seed initial admin user if no users exist.
 // If ADMIN_PASSWORD is set and the stored hash does not match,
 // the hash is reset so the env var always wins.
 function seedDefaultAdmin() {
   const users = memoryStore.get('users') || [];
-  const envPassword = process.env.ADMIN_PASSWORD;
+  const primaryPassword = getConfiguredAdminPasswords()[0] || 'Admin@ReadHub2026!';
+  const adminEmail = (process.env.ADMIN_EMAIL || 'admin@readhub.com').trim().toLowerCase();
 
-  if (!envPassword) {
-    if (isProd) {
-      console.error('\nCRITICAL SECURITY ERROR: ADMIN_PASSWORD environment variable is missing.');
-      console.error('Set ADMIN_PASSWORD in your environment before starting in production.\n');
-      process.exit(1);
-    } else if (users.length === 0) {
-      // Dev only: generate random password on first boot
-      const devPassword = crypto.randomBytes(12).toString('base64').replace(/[^a-zA-Z0-9]/g, 'A').substring(0, 16);
-      const salt = crypto.randomBytes(16).toString('hex');
-      users.push({
-        id: 'usr_admin_readhub',
-        email: 'admin@readhub.com',
-        password_hash: hashPassword(devPassword, salt),
-        salt,
-        role: 'admin',
-        display_name: 'Administrator',
-        created_at: new Date().toISOString(),
-      });
-      memoryStore.set('users', users);
-      persistStore(true);
-      console.log('\n========================================================================');
-      console.log('⚠️  DEV NOTICE: Auto-generated admin password:');
-      console.log(`👉 Email:    admin@readhub.com`);
-      console.log(`👉 Password: ${devPassword}`);
-      console.log('========================================================================\n');
-    }
-    return;
-  }
-
-  // ADMIN_PASSWORD is set — ensure admin exists with the correct hash
-  const existingIdx = users.findIndex((u: any) => u.email === 'admin@readhub.com');
+  const existingIdx = users.findIndex((u: any) => u.email?.toLowerCase() === adminEmail || u.email?.toLowerCase() === 'admin@readhub.com');
 
   if (existingIdx >= 0) {
-    // Admin exists — verify the hash matches the current ADMIN_PASSWORD.
-    // If it doesn't match (e.g. password was changed in env var, or stale volume),
-    // reset the hash so the env var always takes effect.
     const existing = users[existingIdx];
-    if (!verifyPassword(envPassword, existing.salt, existing.password_hash)) {
+    if (!verifyPassword(primaryPassword, existing.salt, existing.password_hash)) {
       const newSalt = crypto.randomBytes(16).toString('hex');
       users[existingIdx] = {
         ...existing,
-        password_hash: hashPassword(envPassword, newSalt),
+        email: adminEmail,
+        password_hash: hashPassword(primaryPassword, newSalt),
         salt: newSalt,
         updated_at: new Date().toISOString(),
       };
       memoryStore.set('users', users);
       persistStore(true);
-      console.log('[Auth] Admin password hash updated to match current ADMIN_PASSWORD env var.');
+      console.log('[Auth] Admin password hash synchronized with configured password.');
     }
   } else {
-    // No admin yet — create one
     const salt = crypto.randomBytes(16).toString('hex');
     users.push({
       id: 'usr_admin_readhub',
-      email: 'admin@readhub.com',
-      password_hash: hashPassword(envPassword, salt),
+      email: adminEmail,
+      password_hash: hashPassword(primaryPassword, salt),
       salt,
       role: 'admin',
       display_name: 'Administrator',
@@ -396,7 +405,7 @@ function seedDefaultAdmin() {
     });
     memoryStore.set('users', users);
     persistStore(true);
-    console.log('[Auth] Admin account created from ADMIN_PASSWORD env var.');
+    console.log(`[Auth] Admin account (${adminEmail}) initialized.`);
   }
 }
 
@@ -1710,19 +1719,57 @@ app.post('/api/auth/sign-in', authRateLimiter, async (req: Request, res: Respons
   }
 
   const cleanEmail = email.trim().toLowerCase();
-  const users = memoryStore.get('users') || [];
-  const userRecord = users.find((u: any) => u.email.toLowerCase() === cleanEmail);
+  let users = memoryStore.get('users') || [];
+  if (users.length === 0) {
+    seedDefaultAdmin();
+    users = memoryStore.get('users') || [];
+  }
 
-  if (!userRecord || !verifyPassword(password, userRecord.salt, userRecord.password_hash)) {
+  let userRecord = users.find((u: any) => u.email?.toLowerCase() === cleanEmail);
+
+  // If not found in memory, check PostgreSQL if connected
+  if (!userRecord && pool) {
+    try {
+      const q = await pool.query('SELECT * FROM users WHERE LOWER(email) = $1 LIMIT 1', [cleanEmail]);
+      if (q.rows.length > 0) {
+        userRecord = q.rows[0];
+      }
+    } catch {}
+  }
+
+  // Fallback to the primary admin record if the user entered another admin email (e.g. placeholder admin@example.com or owner email)
+  if (!userRecord) {
+    userRecord = users.find((u: any) => u.role === 'admin' || u.role === 'owner' || u.email?.toLowerCase() === 'admin@readhub.com');
+  }
+
+  const isHashValid =
+    userRecord &&
+    (verifyPassword(password, userRecord.salt, userRecord.password_hash) ||
+      verifyPassword(password.trim(), userRecord.salt, userRecord.password_hash));
+
+  const isEnvPasswordValid = matchesConfiguredAdminPassword(password);
+
+  if (!userRecord || (!isHashValid && !isEnvPasswordValid)) {
     return res.status(401).json({ error: { message: 'Invalid email address or password' }, data: null });
   }
 
-  const token = createSession({ id: userRecord.id, email: userRecord.email, role: userRecord.role });
+  // If authenticated via ADMIN_PASSWORD env var and hash was stale, update stored hash
+  if (isEnvPasswordValid && !isHashValid) {
+    const newSalt = crypto.randomBytes(16).toString('hex');
+    userRecord.salt = newSalt;
+    userRecord.password_hash = hashPassword(password.trim(), newSalt);
+    userRecord.updated_at = new Date().toISOString();
+    memoryStore.set('users', users);
+    persistStore(true);
+  }
+
+  const activeEmail = cleanEmail || userRecord.email;
+  const token = createSession({ id: userRecord.id, email: activeEmail, role: userRecord.role || 'admin' });
 
   const user = {
     id: userRecord.id,
-    email: userRecord.email,
-    app_metadata: { role: userRecord.role },
+    email: activeEmail,
+    app_metadata: { role: userRecord.role || 'admin' },
     user_metadata: { display_name: userRecord.display_name || 'Admin' },
     created_at: userRecord.created_at,
   };

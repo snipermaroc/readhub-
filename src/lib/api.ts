@@ -1,3 +1,13 @@
+import { getAuthHeader, getStoredSession } from './postgres'
+
+function getUploadHeaders(): Record<string, string> {
+  const session = getStoredSession()
+  if (session?.access_token) {
+    return { Authorization: `Bearer ${session.access_token}` }
+  }
+  return {}
+}
+
 export interface Chapter {
   id?: string
   title: string
@@ -132,7 +142,10 @@ export interface PopularItem {
 
 export const projects = {
   async getAll(): Promise<Project[]> {
-    const res = await fetch('/api/projects')
+    const res = await fetch('/api/projects', {
+      headers: getAuthHeader(),
+      credentials: 'include',
+    })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
       throw new Error(err.error || 'Failed to fetch projects')
@@ -142,7 +155,10 @@ export const projects = {
   },
 
   async get(id: string): Promise<Project> {
-    const res = await fetch(`/api/projects/${id}`)
+    const res = await fetch(`/api/projects/${id}`, {
+      headers: getAuthHeader(),
+      credentials: 'include',
+    })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
       throw new Error(err.error || `Failed to fetch project ${id}`)
@@ -154,7 +170,8 @@ export const projects = {
   async create(payload: Partial<Project>): Promise<Project> {
     const res = await fetch('/api/projects', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeader(),
+      credentials: 'include',
       body: JSON.stringify(payload),
     })
     if (!res.ok) {
@@ -168,7 +185,8 @@ export const projects = {
   async update(id: string, payload: Partial<Project>): Promise<Project> {
     const res = await fetch(`/api/projects/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeader(),
+      credentials: 'include',
       body: JSON.stringify(payload),
     })
     if (!res.ok) {
@@ -182,6 +200,8 @@ export const projects = {
   async delete(id: string): Promise<{ success: boolean }> {
     const res = await fetch(`/api/projects/${id}`, {
       method: 'DELETE',
+      headers: getAuthHeader(),
+      credentials: 'include',
     })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
@@ -193,6 +213,8 @@ export const projects = {
   async clearCache(): Promise<{ success: boolean; message: string }> {
     const res = await fetch('/api/projects/clear-cache', {
       method: 'POST',
+      headers: getAuthHeader(),
+      credentials: 'include',
     })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
@@ -202,7 +224,10 @@ export const projects = {
   },
 
   async getLogs(): Promise<LogEntry[]> {
-    const res = await fetch('/api/projects/logs-all')
+    const res = await fetch('/api/projects/logs-all', {
+      headers: getAuthHeader(),
+      credentials: 'include',
+    })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
       throw new Error(err.error || 'Failed to fetch log entries')
@@ -218,6 +243,8 @@ export const upload = {
     formData.append('file', file)
     const res = await fetch(`/api/upload/${projectId}/cover/${mangaIndex}`, {
       method: 'POST',
+      headers: getUploadHeaders(),
+      credentials: 'include',
       body: formData,
     })
     if (!res.ok) {
@@ -232,6 +259,8 @@ export const upload = {
     formData.append('file', file)
     const res = await fetch('/api/upload/image', {
       method: 'POST',
+      headers: getUploadHeaders(),
+      credentials: 'include',
       body: formData,
     })
     if (!res.ok) {
@@ -246,6 +275,8 @@ export const upload = {
     Array.from(files).forEach((f) => formData.append('files', f))
     const res = await fetch(`/api/upload/${projectId}/chapters/${mangaIndex}`, {
       method: 'POST',
+      headers: getUploadHeaders(),
+      credentials: 'include',
       body: formData,
     })
     if (!res.ok) {
@@ -260,6 +291,8 @@ export const upload = {
     formData.append('file', file)
     const res = await fetch(`/api/upload/${projectId}/chapters/${mangaIndex}/zip`, {
       method: 'POST',
+      headers: getUploadHeaders(),
+      credentials: 'include',
       body: formData,
     })
     if (!res.ok) {
@@ -272,6 +305,8 @@ export const upload = {
   async clearChapters(projectId: string, mangaIndex: number): Promise<{ success: boolean }> {
     const res = await fetch(`/api/upload/${projectId}/chapters/${mangaIndex}`, {
       method: 'DELETE',
+      headers: getAuthHeader(),
+      credentials: 'include',
     })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
@@ -285,7 +320,8 @@ export const generate = {
   async site(projectId: string): Promise<{ success: boolean; url: string }> {
     const res = await fetch(`/api/generate/${projectId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeader(),
+      credentials: 'include',
     })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
@@ -297,7 +333,8 @@ export const generate = {
   async popular(projectId: string): Promise<{ success: boolean; url: string }> {
     const res = await fetch(`/api/generate/${projectId}/popular`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeader(),
+      credentials: 'include',
     })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
@@ -309,6 +346,8 @@ export const generate = {
   async deletePopular(projectId: string): Promise<{ success: boolean }> {
     const res = await fetch(`/api/generate/${projectId}/popular`, {
       method: 'DELETE',
+      headers: getAuthHeader(),
+      credentials: 'include',
     })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
@@ -343,7 +382,10 @@ export interface ScanResult {
 
 export const driveToCSV = {
   async credentialsStatus(): Promise<CredentialsStatus> {
-    const res = await fetch('/api/drive-to-csv/credentials-status')
+    const res = await fetch('/api/drive-to-csv/credentials-status', {
+      headers: getAuthHeader(),
+      credentials: 'include',
+    })
     if (!res.ok) {
       return { configured: false }
     }
@@ -355,6 +397,8 @@ export const driveToCSV = {
     formData.append('file', file)
     const res = await fetch('/api/drive-to-csv/upload-credentials', {
       method: 'POST',
+      headers: getUploadHeaders(),
+      credentials: 'include',
       body: formData,
     })
     if (!res.ok) {
@@ -367,7 +411,8 @@ export const driveToCSV = {
   async downloadZip(rootName: string, csvFiles: CsvFile[]): Promise<Blob> {
     const res = await fetch('/api/drive-to-csv/download-zip', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeader(),
+      credentials: 'include',
       body: JSON.stringify({ rootName, csvFiles }),
     })
     if (!res.ok) {
@@ -382,7 +427,8 @@ export const wpImport = {
   async test(siteUrl: string): Promise<{ ok: boolean; plugin?: string; mangaCount?: number }> {
     const res = await fetch('/api/wp-import/test', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeader(),
+      credentials: 'include',
       body: JSON.stringify({ siteUrl }),
     })
     if (!res.ok) {
@@ -395,7 +441,8 @@ export const wpImport = {
   async mangaList(siteUrl: string): Promise<{ manga: Array<{ id: string; title: string; slug: string; summary: string; cover: string; chaptersCount?: number }> }> {
     const res = await fetch('/api/wp-import/manga-list', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeader(),
+      credentials: 'include',
       body: JSON.stringify({ siteUrl }),
     })
     if (!res.ok) {
@@ -408,7 +455,8 @@ export const wpImport = {
   async import(siteUrl: string, mangaId: string, projectId: string): Promise<{ success: boolean; importedCount: number }> {
     const res = await fetch('/api/wp-import/import', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeader(),
+      credentials: 'include',
       body: JSON.stringify({ siteUrl, mangaId, projectId }),
     })
     if (!res.ok) {

@@ -28,7 +28,7 @@ export default function Login() {
         password,
       })
       if (loginError) {
-        setError(t("Invalid email address or password."))
+        setError(loginError.message ? t(loginError.message) : t("Invalid email address or password."))
       } else {
         navigate("/hub/dashboard", { replace: true })
       }
@@ -117,7 +117,7 @@ export default function Login() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="h-12 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                placeholder="admin@example.com"
+                placeholder="admin@readhub.com"
               />
             </div>
 
