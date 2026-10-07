@@ -1653,6 +1653,8 @@ app.post('/api/db/query', async (req: Request, res: Response) => {
 // ───────────────────────────────────────────────────────────────────────────
 // SECURE AUTH REST API (Real Password Validation & Token Session Store)
 // ───────────────────────────────────────────────────────────────────────────
+// seedDefaultAdmin MUST run after loadPersistedStore() so it can read/fix
+// any stale password hash stored in the volume.
 seedDefaultAdmin();
 
 // ── Admin Password Reset Endpoint ────────────────────────────────────────
@@ -1699,33 +1701,15 @@ app.post('/api/auth/reset-admin', authRateLimiter, (req: Request, res: Response)
 app.post('/api/auth/sign-in', authRateLimiter, async (req: Request, res: Response) => {
   const { email, password } = req.body || {};
   if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
-    return res.status(400).json({ error: { message: 'Adresse e-mail et mot de passe requis' }, data: null });
+    return res.status(400).json({ error: { message: 'Email and password are required' }, data: null });
   }
 
   const cleanEmail = email.trim().toLowerCase();
   const users = memoryStore.get('users') || [];
-  let userRecord = users.find(u => u.email.toLowerCase() === cleanEmail);
+  const userRecord = users.find((u: any) => u.email.toLowerCase() === cleanEmail);
 
-  // If initial admin not created yet, seed it on first attempt with provided password
-  if (!userRecord && users.length === 0 && cleanEmail === 'admin@readhub.com') {
-    const salt = crypto.randomBytes(16).toString('hex');
-    userRecord = {
-      id: 'usr_admin_readhub',
-      email: cleanEmail,
-      password_hash: hashPassword(password, salt),
-      salt,
-      role: 'admin',
-      display_name: 'Administrator',
-      created_at: new Date().toISOString(),
-    };
-    users.push(userRecord);
-    memoryStore.set('users', users);
-    persistStore(true);
-  }
-
-  // Verify password hash
   if (!userRecord || !verifyPassword(password, userRecord.salt, userRecord.password_hash)) {
-    return res.status(401).json({ error: { message: 'Adresse e-mail ou mot de passe incorrect' }, data: null });
+    return res.status(401).json({ error: { message: 'Invalid email address or password' }, data: null });
   }
 
   const token = createSession({ id: userRecord.id, email: userRecord.email, role: userRecord.role });
