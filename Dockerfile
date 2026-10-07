@@ -1,55 +1,69 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# Stage 1 — Build the React frontend
-# Force NODE_ENV=development so npm installs ALL deps including devDependencies
-# (TypeScript, Vite, esbuild, tsx etc. are devDeps needed to compile the app)
+# Stage 1 — Build everything: frontend (Vite) + server (esbuild bundle)
+# NODE_ENV=development so ALL deps (dev + optional) install correctly
 # ─────────────────────────────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
 
-# Override any build-arg NODE_ENV injected by Coolify — build always needs devDeps
 ENV NODE_ENV=development
 
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
 
-# Install ALL deps (dev + prod + optional) — required for tsc + vite build
 RUN npm install --include=optional
 
 COPY . .
 
-# Compile TypeScript + bundle React → dist/
+# 1a. Build the React frontend → dist/
 RUN npm run build
 
+# 1b. Bundle server.ts into a single plain-JS file using esbuild
+#     --bundle: inline all imports from services/ into one file
+#     --platform=node: target Node.js (not browser)
+#     --format=esm: keep ESM since package.json has "type":"module"
+#     --external: keep these as dynamic require() — they are native/binary modules
+RUN npx esbuild server.ts \
+      --bundle \
+      --platform=node \
+      --format=esm \
+      --outfile=server.mjs \
+      --external:pg \
+      --external:bcrypt \
+      --external:fsevents \
+      --external:sharp \
+      --external:@swc/core \
+      --external:esbuild \
+      --packages=external
+
 # ─────────────────────────────────────────────────────────────────────────────
-# Stage 2 — Lean production runtime
+# Stage 2 — Lean production runtime (plain node, no tsx, no esbuild needed)
 # ─────────────────────────────────────────────────────────────────────────────
 FROM node:20-alpine AS runtime
 
-# Install wget for Coolify/Docker healthcheck
+# wget for Coolify healthcheck
 RUN apk add --no-cache wget
 
-# Non-root user for security
+# Non-root user
 RUN addgroup -S readhub && adduser -S readhub -G readhub
 
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
 
-# Install prod + optional deps (optional needed for esbuild linux binary used by tsx)
-# NODE_ENV not set here so npm respects --include=optional properly
-RUN npm install --omit=dev --include=optional --ignore-scripts
+# Install only prod deps needed at runtime (pg, express, cheerio, etc.)
+# NODE_ENV=production here is fine — we don't need tsx/esbuild/vite anymore
+RUN npm install --omit=dev
 
-# Copy compiled frontend from builder
+# Copy compiled server bundle
+COPY --from=builder /app/server.mjs ./server.mjs
+
+# Copy frontend
 COPY --from=builder /app/dist ./dist
 
-# Copy server source
-COPY server.ts ./
+# Copy services source (needed by server bundle for dynamic requires if any)
 COPY services/ ./services/
-COPY tsconfig.json ./
-COPY tsconfig.node.json* ./
-COPY tsconfig.app.json* ./
 
-# Create runtime directories and set ownership
+# Runtime directories
 RUN mkdir -p /app/data /app/uploads /app/generated-sites /app/logs \
     && chown -R readhub:readhub /app
 
@@ -62,7 +76,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=25s --retries=3 \
   CMD wget -qO- http://localhost:3000/api/health || exit 1
 
-# Set production only at runtime — never at buildtime
 ENV NODE_ENV=production
 
-CMD ["npx", "tsx", "server.ts"]
+# Run plain compiled JS — no tsx, no esbuild at runtime
+CMD ["node", "server.mjs"]
