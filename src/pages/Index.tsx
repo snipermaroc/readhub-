@@ -45,7 +45,7 @@ export default function Index() {
   const [selectedGenre, setSelectedGenre] = useState<string>("All")
   const [sortBy, setSortBy] = useState<"views" | "title">("views")
   const [currentPage, setCurrentPage] = useState(1)
-  const [theme, setTheme] = useState<"light" | "dark">("light")
+  const [theme, setTheme] = useState<"light" | "dark">("dark")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
 
@@ -59,7 +59,7 @@ export default function Index() {
 
   // 1. Theme Synchronization
   useEffect(() => {
-    const saved = localStorage.getItem("theme") || "light"
+    const saved = localStorage.getItem("chantan-theme") || "dark"
     setTheme(saved as "light" | "dark")
     if (saved === "dark") {
       document.documentElement.classList.add("dark")
@@ -71,7 +71,7 @@ export default function Index() {
   const toggleTheme = () => {
     const next = theme === "dark" ? "light" : "dark"
     setTheme(next)
-    localStorage.setItem("theme", next)
+    localStorage.setItem("chantan-theme", next)
     if (next === "dark") {
       document.documentElement.classList.add("dark")
     } else {
