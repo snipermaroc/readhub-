@@ -24,7 +24,7 @@ const queryClient = new QueryClient()
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="dark">
+    <ThemeProvider defaultTheme="light">
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -62,17 +62,10 @@ const App = () => (
             <Route path="/hub/popular/:id" element={<ProtectedRoute><PopularManager /></ProtectedRoute>} />
             <Route path="/hub/logs" element={<ProtectedRoute><LogsPage /></ProtectedRoute>} />
 
-            {/* Legacy redirects — keep old paths working so existing links don't break */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-            <Route path="/admin/traffic" element={<ProtectedRoute><Admin initialSection="traffic" /></ProtectedRoute>} />
-            <Route path="/admin/invoices" element={<ProtectedRoute><Admin initialSection="invoices" /></ProtectedRoute>} />
-            <Route path="/admin/importer" element={<ProtectedRoute><Admin initialSection="importer" /></ProtectedRoute>} />
-            <Route path="/create" element={<ProtectedRoute><CreateWizard /></ProtectedRoute>} />
-            <Route path="/create/:id" element={<ProtectedRoute><CreateWizard /></ProtectedRoute>} />
-            <Route path="/drive-to-csv" element={<ProtectedRoute><DriveToCSV /></ProtectedRoute>} />
-            <Route path="/popular/:id" element={<ProtectedRoute><PopularManager /></ProtectedRoute>} />
-            <Route path="/logs" element={<ProtectedRoute><LogsPage /></ProtectedRoute>} />
+            {/* ─── NO legacy /admin or /login aliases ───
+                 Those paths intentionally return 404 (caught by the * route below).
+                 Do NOT add routes for /admin, /login, /create here.
+                 Security: unknown paths must not reveal that /hub exists. */}
 
             {/* Legal Pages */}
             <Route path="/privacy" element={<LegalPage kind="privacy" />} />

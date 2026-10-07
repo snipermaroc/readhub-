@@ -33,7 +33,7 @@ interface Props {
   defaultTheme?: Theme
 }
 
-export function ThemeProvider({ children, defaultTheme = "dark" }: Props) {
+export function ThemeProvider({ children, defaultTheme = "light" }: Props) {
   const [theme, setThemeState] = useState<Theme>(() => readStoredTheme() ?? defaultTheme)
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(
     theme === "system" ? getSystemTheme() : theme
