@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https: http:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https: http: ws: wss:; frame-ancestors 'self' https://*.google.com https://*.run.app https://localhost.corp.google.com:26001;" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=optional" rel="stylesheet" /></noscript>
+    <title>MangaReadHub — Read Manga Online Free</title>
+    <meta name="description" content="Discover the most-read manga series online. Read the latest chapters of One Piece, Naruto, Berserk, Jujutsu Kaisen, and hundreds more — free, fast, and updated daily on MangaReadHub." />
+    <script>
+      // Filter out foreign browser extension errors (e.g., MetaMask, wallet injectors)
+      (function() {
+        function isExtensionError(msg, source, stack) {
+          var str = (msg || '') + ' ' + (source || '') + ' ' + (stack || '');
+          return str.includes('chrome-extension://') ||
+                 str.includes('moz-extension://') ||
+                 str.includes('safari-extension://') ||
+                 str.includes('MetaMask') ||
+                 str.includes('Failed to connect to MetaMask') ||
+                 str.includes('inpage.js');
+        }
+
+        window.addEventListener('error', function(e) {
+          if (isExtensionError(e.message, e.filename, e.error && e.error.stack)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(e) {
+          var reason = e.reason;
+          var msg = reason && (reason.message || String(reason));
+          var stack = reason && reason.stack;
+          if (isExtensionError(msg, '', stack)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

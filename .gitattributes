@@ -1,0 +1,4 @@
+# Normalize line endings to LF on commit (works cross-platform)
+* text=auto eol=lf
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript

@@ -1,0 +1,6 @@
+{
+  "name": "READHUB",
+  "description": "Portail de découverte manga réunissant des éditions indépendantes et leurs derniers chapitres.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

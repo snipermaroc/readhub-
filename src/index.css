@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 33% 98%;
+    --foreground: 200 10% 11%;
+
+    --primary: 181 100% 20%;
+    --primary-foreground: 0 0% 100%;
+
+    --primary-container: 168 76% 83%;
+    --on-primary-container: 168 100% 6%;
+
+    --secondary: 229 20% 42%;
+    --secondary-foreground: 0 0% 100%;
+
+    --surface: 210 33% 98%;
+    --surface-container: 210 12% 93%;
+    --surface-container-low: 210 20% 96%;
+    --surface-container-high: 210 10% 91%;
+    --surface-container-highest: 200 8% 89%;
+    --surface-container-lowest: 0 0% 100%;
+
+    --on-surface: 200 10% 11%;
+    --on-surface-variant: 189 13% 26%;
+
+    --outline: 189 8% 46%;
+    --outline-variant: 191 16% 77%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 200 10% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 10% 11%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 229 20% 42%;
+
+    --accent: 168 76% 83%;
+    --accent-foreground: 168 100% 6%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 56% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 191 16% 77%;
+    --input: 191 16% 77%;
+    --ring: 181 100% 20%;
+
+    --radius: 0.75rem;
+
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-headline: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+
+  .dark {
+    --background: 225 21% 8%;
+    --foreground: 223 15% 90%;
+
+    --primary: 181 100% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    --primary-container: 181 60% 18%;
+    --on-primary-container: 168 76% 83%;
+
+    --secondary: 228 22% 68%;
+    --secondary-foreground: 225 21% 8%;
+
+    --surface: 225 21% 8%;
+    --surface-container: 228 17% 18%;
+    --surface-container-low: 228 23% 15%;
+    --surface-container-high: 228 18% 21%;
+    --surface-container-highest: 228 18% 24%;
+    --surface-container-lowest: 228 20% 13%;
+
+    --on-surface: 223 15% 90%;
+    --on-surface-variant: 228 18% 75%;
+
+    --outline: 228 12% 55%;
+    --outline-variant: 228 15% 30%;
+
+    --card: 228 20% 13%;
+    --card-foreground: 223 15% 90%;
+    --popover: 228 20% 13%;
+    --popover-foreground: 223 15% 90%;
+
+    --muted: 228 23% 15%;
+    --muted-foreground: 228 22% 68%;
+
+    --accent: 181 60% 18%;
+    --accent-foreground: 168 76% 83%;
+
+    --border: 228 15% 25%;
+    --input: 228 15% 25%;
+    --ring: 181 100% 33%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: hsl(var(--surface));
+    color: hsl(var(--on-surface));
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headline);
+    font-weight: 700;
+  }
+}
+
+/* Dark mode specific rules from design system */
+html.dark body { background: #0f1117; color: #e1e3e8; }
+html.dark .bg-surface { background: #0f1117; }
+html.dark .bg-surface-container-lowest { background: #1a1d27; }
+html.dark .bg-surface-container-low { background: #1e2130; }
+html.dark .bg-surface-container { background: #252836; }
+html.dark .bg-surface-container-high { background: #2c3040; }
+html.dark .bg-surface-container-highest { background: #33364a; }
+html.dark .text-on-surface { color: #e1e3e8; }
+html.dark .text-secondary { color: #9ba3c0; }
+html.dark header { background: rgba(15, 17, 23, 0.85) !important; }
+html.dark footer { background: #0a0c12; }
+html.dark #mobileMenu { background: rgba(26, 29, 39, 0.95) !important; }
+
+/* Chapter rows alternating stripes */
+.chapter-row:nth-child(even) { background-color: #f2f4f6; }
+html.dark .chapter-row:nth-child(even) { background-color: #1e2130; }
+
+/* Prose styling for legal pages */
+.prose h2 { font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; font-family: 'Plus Jakarta Sans', sans-serif; color: #191c1e; }
+.prose h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+.prose p { margin-bottom: 1rem; line-height: 1.75; color: #555d81; }
+.prose ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+.prose ul li { margin-bottom: 0.4rem; color: #555d81; }
+.prose a { color: #006769; }
+html.dark .prose h2 { color: #e1e3e8; }
+html.dark .prose p, html.dark .prose ul li { color: #9ba3c0; }
+html.dark .prose a { color: #00a8a8; }

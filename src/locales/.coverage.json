@@ -1,0 +1,258 @@
+{
+ "v": 1,
+ "at": "2026-10-04T09:59:32.106Z",
+ "incomplete": true,
+ "pendingKeysByLang": {
+  "en": 0
+ },
+ "a": [
+  {
+   "path": "src/components/Footer.tsx",
+   "reason": "template-outside-text-position",
+   "snippet": "© . All rights reserved.",
+   "line": 30
+  },
+  {
+   "path": "src/pages/Admin.tsx",
+   "reason": "state-string",
+   "snippet": "meta: \"Tous les sites\""
+  },
+  {
+   "path": "src/pages/Admin.tsx",
+   "reason": "state-string",
+   "snippet": "meta: \"Tous statuts\""
+  },
+  {
+   "path": "src/pages/Admin.tsx",
+   "reason": "state-string",
+   "snippet": "meta: \"À examiner\""
+  },
+  {
+   "path": "src/pages/Index.tsx",
+   "reason": "template-outside-text-position",
+   "snippet": "— READHUB",
+   "line": 23
+  },
+  {
+   "path": "src/pages/Index.tsx",
+   "reason": "unclassified",
+   "snippet": "À découvrir",
+   "line": 37
+  },
+  {
+   "path": "src/pages/Index.tsx",
+   "reason": "unclassified",
+   "snippet": "À lire maintenant",
+   "line": 38
+  },
+  {
+   "path": "src/pages/Index.tsx",
+   "reason": "unclassified",
+   "snippet": "Le réseau READHUB",
+   "line": 39
+  },
+  {
+   "path": "src/pages/Index.tsx",
+   "reason": "unclassified",
+   "snippet": "Explorer par genre",
+   "line": 40
+  },
+  {
+   "path": "src/pages/Index.tsx",
+   "reason": "unclassified",
+   "snippet": "Toutes les éditions",
+   "line": 41
+  },
+  {
+   "path": "src/pages/Index.tsx",
+   "reason": "parse-error",
+   "snippet": "Missing semicolon. (51:32)"
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "template-logic",
+   "snippet": "`Page ${index+1}`",
+   "line": 64
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Manga ajouté en brouillon.",
+   "line": 31
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Chapitre créé en brouillon. Vous pouvez maintenant ajouter ses pages.",
+   "line": 35
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Chapitre publié sur le portail central.",
+   "line": 37
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Chapitre repassé en brouillon.",
+   "line": 37
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "template-outside-text-position",
+   "snippet": "Pages chargées avec fichier(s) à vérifier.",
+   "line": 52
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Pages ajoutées au chapitre.",
+   "line": 52
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Manga publié.",
+   "line": 63
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Manga repassé en brouillon.",
+   "line": 63
+  },
+  {
+   "path": "src/pages/admin/ContentManager.tsx",
+   "reason": "parse-error",
+   "snippet": "Missing semicolon. (71:32)"
+  },
+  {
+   "path": "src/pages/admin/SettingsManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Thème",
+   "line": 39
+  },
+  {
+   "path": "src/pages/admin/SettingsManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Confidentialité",
+   "line": 39
+  },
+  {
+   "path": "src/pages/admin/SettingsManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Réseaux sociaux",
+   "line": 39
+  },
+  {
+   "path": "src/pages/admin/SettingsManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Scripts & styles",
+   "line": 39
+  },
+  {
+   "path": "src/pages/admin/SettingsManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Publicités personnalisées",
+   "line": 50
+  },
+  {
+   "path": "src/pages/admin/SettingsManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Nouvelle bannière",
+   "line": 50
+  },
+  {
+   "path": "src/pages/admin/SettingsManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Pages consultées",
+   "line": 58
+  },
+  {
+   "path": "src/pages/admin/SettingsManager.tsx",
+   "reason": "unclassified",
+   "snippet": "Chapitres consultés",
+   "line": 58
+  },
+  {
+   "path": "src/pages/admin/SiteManager.tsx",
+   "reason": "parse-error",
+   "snippet": "Missing semicolon. (39:32)"
+  }
+ ],
+ "b": [],
+ "c": [
+  {
+   "path": "src/components/ErrorBoundary.tsx",
+   "reason": "class-component",
+   "snippet": "Something went wrong",
+   "line": 32
+  },
+  {
+   "path": "src/components/ErrorBoundary.tsx",
+   "reason": "class-component",
+   "snippet": "An unexpected error occurred. Try refreshing the page.",
+   "line": 34
+  },
+  {
+   "path": "src/components/ErrorBoundary.tsx",
+   "reason": "class-component",
+   "snippet": "Reload",
+   "line": 45
+  },
+  {
+   "path": "src/components/Footer.tsx",
+   "reason": "unclassified-token",
+   "snippet": "Brand",
+   "line": 23
+  },
+  {
+   "path": "src/components/Header.tsx",
+   "reason": "unclassified-token",
+   "snippet": "Brand",
+   "line": 19
+  },
+  {
+   "path": "src/components/MotionReveal.tsx",
+   "reason": "unclassified-token",
+   "snippet": "-80px",
+   "line": 19
+  },
+  {
+   "path": "src/contexts/AuthContext.tsx",
+   "reason": "error-text",
+   "snippet": "useAuth must be used inside AuthProvider",
+   "line": 42
+  },
+  {
+   "path": "src/lib/chantan-ai.ts",
+   "reason": "excluded-dir-text",
+   "snippet": "AI request failed ()",
+   "line": 94
+  },
+  {
+   "path": "index.html",
+   "reason": "tab-title",
+   "snippet": "<title>READHUB — Le manga, plusieurs mondes</title>"
+  },
+  {
+   "path": "src/",
+   "reason": "db-content",
+   "snippet": "tables read by the app: manga_sites, site_settings, manga, chapters, chapter_images, import_jobs, analytics_events, activity_logs",
+   "count": 8
+  },
+  {
+   "path": "supabase/functions/_shared/cors.ts",
+   "reason": "server-messages",
+   "snippet": "2 text(s) across 1 edge function file(s)",
+   "count": 2
+  },
+  {
+   "path": "src/",
+   "reason": "date-locale",
+   "snippet": "dates formatted for \"fr-FR\" only (7 places)",
+   "count": 7
+  }
+ ]
+}
