@@ -1000,10 +1000,15 @@ if (hasDbConfig) {
         ssl: process.env.PGSSL === 'true' ? { rejectUnauthorized: false } : undefined,
       };
 
-  pool = new Pool(poolConfig);
-  pool.on('error', (err) => {
-    console.warn('[PostgreSQL Pool Warning]:', err.message);
-  });
+  try {
+    pool = new Pool(poolConfig);
+    pool.on('error', (err) => {
+      console.warn('[PostgreSQL Pool Warning]:', err.message);
+    });
+  } catch (err: any) {
+    console.warn('[AI Studio] PostgreSQL Pool not connected — in-memory mock active:', err.message);
+    pool = null;
+  }
 }
 
 let isConnected = false;

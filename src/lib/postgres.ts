@@ -26,9 +26,13 @@ export function getStoredSession() {
 }
 
 export function getAuthHeader(): Record<string, string> {
-  return {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
+  if (inMemorySession?.access_token) {
+    headers['Authorization'] = `Bearer ${inMemorySession.access_token}`
+  }
+  return headers
 }
 
 function setStoredSession(session: any) {
@@ -283,7 +287,7 @@ export const postgres: any = {
         })
         const json = await res.json()
         if (res.ok && json.data?.user) {
-          const session = { user: json.data.user }
+          const session = json.data.session || { user: json.data.user }
           setStoredSession(session)
           return { data: { user: json.data.user, session }, error: null }
         }

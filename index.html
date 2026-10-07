@@ -3,6 +3,110 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Prevent browser extensions (e.g. frame_ant.js, MetaMask, wallet injectors) from crashing when mutating window.fetch
+      (function() {
+        function isExtErr(m, s, k) {
+          var str = (m || '') + ' ' + (s || '') + ' ' + (k || '');
+          return (
+            str.includes('chrome-extension://') ||
+            str.includes('moz-extension://') ||
+            str.includes('safari-extension://') ||
+            str.includes('frame_ant') ||
+            str.includes('Cannot set property fetch') ||
+            str.includes('MetaMask') ||
+            str.includes('inpage.js')
+          );
+        }
+
+        try {
+          var currentFetch = typeof window.fetch === 'function' ? window.fetch.bind(window) : undefined;
+          var patchFetchProp = function(obj) {
+            if (!obj) return;
+            var desc = Object.getOwnPropertyDescriptor(obj, 'fetch');
+            if (!desc || desc.configurable !== false) {
+              var getter = desc && desc.get ? desc.get : null;
+              var setter = desc && desc.set ? desc.set : null;
+              Object.defineProperty(obj, 'fetch', {
+                configurable: true,
+                enumerable: true,
+                get: function() {
+                  if (currentFetch) return currentFetch;
+                  return getter ? getter.call(window) : undefined;
+                },
+                set: function(fn) {
+                  if (typeof fn === 'function') currentFetch = fn;
+                  if (setter) {
+                    try { setter.call(window, fn); } catch (_) {}
+                  }
+                }
+              });
+            }
+          };
+          patchFetchProp(window);
+          if (typeof Window !== 'undefined') patchFetchProp(Window.prototype);
+
+          var origDefineProperty = Object.defineProperty;
+          Object.defineProperty = function(target, prop, descriptor) {
+            if (
+              prop === 'fetch' &&
+              (target === window || (typeof Window !== 'undefined' && target === Window.prototype) || target === globalThis) &&
+              descriptor &&
+              descriptor.get &&
+              !descriptor.set
+            ) {
+              var origGet = descriptor.get;
+              var localFetch = undefined;
+              descriptor = Object.assign({}, descriptor, {
+                configurable: true,
+                get: function() {
+                  return localFetch || origGet.call(this);
+                },
+                set: function(fn) {
+                  if (typeof fn === 'function') localFetch = fn;
+                }
+              });
+            }
+            return origDefineProperty.call(Object, target, prop, descriptor);
+          };
+        } catch (_) {}
+
+        window.addEventListener('error', function(e) {
+          if (isExtErr(e.message, e.filename, e.error && e.error.stack)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(e) {
+          var r = e.reason, m = r && (r.message || String(r));
+          if (isExtErr(m, '', r && r.stack)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+
+        var origAddEventListener = window.addEventListener;
+        window.addEventListener = function(type, listener, options) {
+          if ((type === 'error' || type === 'unhandledrejection') && typeof listener === 'function') {
+            var wrapped = function(e) {
+              if (type === 'error' && e && isExtErr(e.message, e.filename, e.error && e.error.stack)) {
+                return;
+              }
+              if (type === 'unhandledrejection' && e) {
+                var r = e.reason, m = r && (r.message || String(r));
+                if (isExtErr(m, '', r && r.stack)) return;
+              }
+              return listener.apply(this, arguments);
+            };
+            return origAddEventListener.call(this, type, wrapped, options);
+          }
+          return origAddEventListener.call(this, type, listener, options);
+        };
+      })();
+    </script>
 
     <!-- Favicon — SVG works in all modern browsers -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -14,26 +118,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
 
-    <title>Read Manga Online Free</title>
-    <meta name="description" content="Discover and read manga online for free. Updated daily with the latest chapters." />
-
-    <script>
-      // Suppress browser extension errors (MetaMask, wallet injectors)
-      (function() {
-        function isExtErr(m, s, k) {
-          var str = (m||'') + ' ' + (s||'') + ' ' + (k||'');
-          return str.includes('chrome-extension://') || str.includes('moz-extension://') ||
-                 str.includes('MetaMask') || str.includes('inpage.js');
-        }
-        window.addEventListener('error', function(e) {
-          if (isExtErr(e.message, e.filename, e.error && e.error.stack)) { e.preventDefault(); return true; }
-        }, true);
-        window.addEventListener('unhandledrejection', function(e) {
-          var r = e.reason, m = r && (r.message || String(r));
-          if (isExtErr(m, '', r && r.stack)) { e.preventDefault(); return true; }
-        }, true);
-      })();
-    </script>
+    <title>READHUB</title>
+    <meta name="description" content="Portail de découverte manga réunissant des éditions indépendantes et leurs derniers chapitres." />
+    <meta property="og:title" content="READHUB" />
+    <meta property="og:description" content="Portail de découverte manga réunissant des éditions indépendantes et leurs derniers chapitres." />
   </head>
   <body>
     <div id="root"></div>

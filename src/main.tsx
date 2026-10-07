@@ -11,6 +11,8 @@ if (typeof window !== "undefined") {
     if (
       errorStr.includes("chrome-extension://") ||
       errorStr.includes("moz-extension://") ||
+      errorStr.includes("frame_ant") ||
+      errorStr.includes("Cannot set property fetch") ||
       errorStr.includes("MetaMask") ||
       errorStr.includes("inpage.js")
     ) {
