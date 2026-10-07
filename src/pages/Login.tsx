@@ -156,9 +156,11 @@ export default function Login() {
             </button>
           </form>
 
-          <p className="mt-7 text-xs leading-5 text-slate-400 dark:text-slate-500">
-            {t("Administrator accounts are created by the platform owner.")}
-          </p>
+          <div className="mt-7 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-3.5 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+            <p className="font-semibold text-slate-700 dark:text-slate-200">{t("Default Credentials:")}</p>
+            <p>Email: <code className="font-mono text-primary font-bold">admin@readhub.com</code></p>
+            <p>Password: <code className="font-mono text-slate-600 dark:text-slate-300">ADMIN_PASSWORD</code> env var or <code className="font-mono text-primary font-bold">Admin@ReadHub2026!</code></p>
+          </div>
         </div>
       </section>
     </main>
