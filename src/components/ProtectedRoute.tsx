@@ -6,7 +6,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const { t } = useTranslation()
   const { user, role, loading } = useAuth()
   if (loading) return <div className="min-h-screen bg-background" aria-label={t("Chargement")} />
-  if (!user) return <Navigate to="/login" replace />
+  if (!user) return <Navigate to="/hub" replace />
   if (role !== "admin" && role !== "owner") return <Navigate to="/" replace />
   return <>{children}</>
 }

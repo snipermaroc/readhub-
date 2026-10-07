@@ -1671,6 +1671,7 @@ app.post('/api/auth/sign-in', authRateLimiter, async (req: Request, res: Respons
     data: {
       user,
       session: {
+        access_token: token,
         token_type: 'bearer',
         expires_in: 7 * 24 * 3600,
         user,

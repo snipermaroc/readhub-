@@ -279,7 +279,7 @@ export default function Admin({ initialSection = "overview" }: { initialSection?
           <div className="flex items-center gap-3">
             <ThemeToggle />
             <Link
-              to="/create"
+              to="/hub/create"
               className="flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3.5 py-1.5 text-xs font-semibold shadow-sm hover:opacity-90 transition"
             >
               <Plus size={14} /> {t("Créer un site")}
@@ -342,7 +342,7 @@ function Overview({
         </div>
         <div className="flex gap-2">
           <Link
-            to="/create"
+            to="/hub/create"
             className="flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2.5 text-sm font-bold shadow-sm transition hover:opacity-95"
           >
             <Plus size={16} />
